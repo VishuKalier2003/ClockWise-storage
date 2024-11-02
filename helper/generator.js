@@ -8,4 +8,8 @@ function generate() {
     return value;
 }
 
-module.exports = {generate}
+function fourDigitGenerate() {
+    return Math.round((Math.random()*9000)+1000);
+}
+
+module.exports = {generate, fourDigitGenerate}

@@ -1,6 +1,6 @@
 const express = require('express');
-const { manager: Manager, task : Task } = require('../schema/managerSchema'); // Importing the manager model
-const {generate : generator} = require('../helper/generator');
+const { manager: Manager, task : Task, abstractTask : AbstractTask } = require('../schema/managerSchema'); // Importing the manager model
+const {generate : generator, fourDigitGenerate : generatorI } = require('../helper/generator');
 
 const router = express.Router();
 
@@ -17,7 +17,8 @@ router.get('/managers/all', async (req, res) => {
 router.post('/managers/add', async (req, res) => {
     const data = req.body;
     const user = new Manager({
-        uid : data.uid,
+        uid : data.uid+generatorI(),
+        password : data.password,
         task : []
     });
     try {
@@ -32,15 +33,21 @@ router.post('/managers/add', async (req, res) => {
 router.post('/managers/create', async(req, res) => {
     try {
         const data = req.body;
+        const taskID = generator();
         const task = new Task({
-            taskid : generator(),
+            taskid : taskID,
             taskName : data.taskName,
             managerid : data.managerid,
             start : new Date(data.start),
-            end : new Date(data.end)
+            end : new Date(data.end),
+            done : false
+        });
+        const abstractTask = new AbstractTask({
+            taskid : taskID,
+            taskName : data.taskName
         });
         const findManager = await Manager.findOne({uid : data.managerid})
-        findManager.task.push(task);
+        findManager.task.push(abstractTask);
         await findManager.save();
         await task.save();  // Update the task into the task channel as well...
         res.status(200).send(`manager ${data.managerid} created a task !!`);
