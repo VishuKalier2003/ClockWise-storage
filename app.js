@@ -25,7 +25,7 @@ app.use(userRouter);
 
 // Sample route
 app.get('/', (req, res) => {
-    res.send('Hello, World!');
+    res.send('You have entered the Storage Microservice backend !!');
 });
 
 // Start the server

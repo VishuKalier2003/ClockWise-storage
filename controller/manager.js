@@ -42,6 +42,7 @@ router.post('/managers/create', async(req, res) => {
         const findManager = await Manager.findOne({uid : data.managerid})
         findManager.task.push(task);
         await findManager.save();
+        await task.save();
         res.status(200).send(`manager ${data.managerid} created a task !!`);
     } catch (error) {
         res.status(400).json({message : error.message, error : error });
